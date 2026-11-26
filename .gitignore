@@ -1,0 +1,50 @@
+# Compiled class file
+*.class
+
+# Logs and local environment files
+*.log
+.env
+.env.*
+!.env.example
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.exe
+*.msi
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# Build outputs and bundled Java runtime
+bin/
+build/
+dist/
+node_modules/
+out/
+release/
+runtime/
+jlink-*/
+target/
+/ui/vendor/three.bundle.js
+
+# IDE files
+.vscode/
+.vs/
+*.iml
+.idea/
+.settings/
+.classpath
+.project
