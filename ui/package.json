@@ -1,0 +1,45 @@
+{
+  "name": "cloud-cluster-scheduler-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plain JavaScript Electron interface for the Java scheduler",
+  "main": "main.js",
+  "scripts": {
+    "build:3d": "node scripts/build-3d.js",
+    "build:java": "node scripts/build-java.js",
+    "build:runtime": "node scripts/build-runtime.js",
+    "build:app": "npm run build:runtime && npm run build:3d && electron-builder --win --x64 --publish never",
+    "start": "npm run build:java && electron .",
+    "test": "npm run build:java && electron tests/window-check.js",
+    "test:3d": "npm run build:java && electron tests/scene3d-check.js"
+  },
+  "build": {
+    "appId": "org.cloudcluster.scheduler",
+    "productName": "Cloud Cluster Scheduler",
+    "directories": { "output": "dist" },
+    "files": [
+      "main.js", "preload.js", "java-config.js", "java-runner.js",
+      "index.html", "styles.css", "renderer.js", "replay.js", "scene2d.js", "scene3d.js",
+      "vendor/**", "assets/**"
+    ],
+    "extraResources": [{ "from": "../bin/ui/scheduler", "to": "scheduler" }],
+    "win": { "target": ["portable", "nsis"] },
+    "portable": {
+      "artifactName": "Cloud-Cluster-Scheduler-${version}-${arch}-portable.${ext}",
+      "unpackDirName": true
+    },
+    "nsis": {
+      "artifactName": "Cloud-Cluster-Scheduler-${version}-${arch}-setup.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "runAfterFinish": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^42.0.0",
+    "electron-builder": "26.18.0",
+    "esbuild": "0.25.10",
+    "three": "0.180.0"
+  }
+}

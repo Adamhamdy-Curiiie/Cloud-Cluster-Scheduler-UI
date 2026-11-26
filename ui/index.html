@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' data: blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Cloud Cluster · CPU Scheduling</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="replay.js" defer></script>
+  <script src="scene2d.js" defer></script>
+  <script src="vendor/three.bundle.js" defer></script>
+  <script src="scene3d.js" defer></script>
+  <script src="renderer.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">CLOUD CLUSTER / CPU SCHEDULING</p>
+        <h1>A closer look at every process.</h1>
+        <p class="subtitle">Choose an algorithm, enter your workload, and inspect the results.</p>
+      </div>
+      <span class="badge">Scheduler lab</span>
+    </header>
+
+    <form id="scheduler-form" novalidate>
+      <section class="panel" aria-labelledby="workload-heading">
+        <div class="section-heading">
+          <div><p class="eyebrow">01 / CONFIGURE</p><h2 id="workload-heading">Workload</h2></div>
+          <span id="process-count" class="muted">3 processes</span>
+        </div>
+        <div class="settings">
+          <label>Algorithm
+            <select id="algorithm" name="algorithm">
+              <option value="ACS">ACS — Adaptive Cluster Scheduling</option>
+              <option value="SJF">SJF — Shortest Job First</option>
+            </select>
+          </label>
+          <label>Quantum <span class="unit">time units</span>
+            <input id="quantum" name="quantum" type="number" min="1" max="2147483647" step="1" value="2" required>
+          </label>
+          <label>Context switch <span class="unit">time units</span>
+            <input id="context-switch" name="contextSwitch" type="number" min="0" max="2147483647" step="1" value="1" required>
+          </label>
+        </div>
+        <p id="algorithm-help" class="hint">ACS requires a positive quantum. All times are whole simulation units.</p>
+        <div class="table-scroll">
+          <table class="input-table">
+            <thead><tr><th scope="col">Process ID</th><th scope="col">Arrival</th><th scope="col">Burst</th><th scope="col">Priority</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+            <tbody id="process-rows"></tbody>
+          </table>
+        </div>
+        <div class="form-footer">
+          <button id="add-process" type="button" class="secondary">+ Add process</button>
+          <div class="run-controls">
+            <span id="status" class="muted" role="status" aria-live="polite">Ready to run</span>
+            <button id="run" type="submit" class="primary">Run simulation <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <div id="error" class="error" role="alert" hidden></div>
+    <section id="empty-state" class="empty-state">
+      <span class="empty-symbol" aria-hidden="true">≡</span>
+      <h2>Your results start here</h2>
+      <p>Run a workload to see process timings and the recorded event sequence.</p>
+    </section>
+
+    <div id="output" hidden>
+      <section id="replay-panel" class="panel replay-panel" aria-labelledby="replay-heading">
+        <div class="section-heading replay-heading">
+          <div><p class="eyebrow">02 / REPLAY</p><h2 id="replay-heading">Recorded scheduler timeline</h2></div>
+          <span id="replay-clock" class="replay-clock">t = 0</span>
+        </div>
+        <div class="replay-toolbar">
+          <div class="transport-controls" role="group" aria-label="Replay transport controls">
+            <button id="replay-restart" type="button" class="secondary" disabled>Restart</button>
+            <button id="replay-back" type="button" class="secondary" disabled>Step back</button>
+            <button id="replay-play" type="button" class="primary" disabled>Play</button>
+            <button id="replay-pause" type="button" class="secondary" disabled>Pause</button>
+            <button id="replay-forward" type="button" class="secondary" disabled>Step forward</button>
+          </div>
+          <label class="speed-control" for="replay-speed">
+            <span>Speed</span>
+            <span class="speed-input">
+              <input id="replay-speed" type="range" min="0.25" max="8" step="0.25" value="1">
+              <output id="replay-speed-value" for="replay-speed">1x</output>
+            </span>
+          </label>
+        </div>
+        <div class="scrubber-row">
+          <label for="replay-scrubber">Simulation time</label>
+          <input id="replay-scrubber" type="range" min="0" max="1" step="0.01" value="0" disabled>
+        </div>
+        <div class="replay-readout" aria-live="polite">
+          <span id="replay-event">Before the first recorded event</span>
+          <span id="replay-counter">Event 0 of 0</span>
+        </div>
+        <div class="scene-view-toolbar">
+          <label for="replay-view">Scene
+            <select id="replay-view"><option value="3d">3D hospital</option><option value="2d">2D queues</option></select>
+          </label>
+          <span id="scene-view-note" class="hint">Drag to orbit, scroll to zoom, right-drag to pan.</span>
+        </div>
+        <div id="replay-scene" class="replay-scene" aria-label="Hospital process replay"></div>
+        <div class="gantt-heading">
+          <div><p class="eyebrow">GANTT</p><h3>CPU activity</h3></div>
+          <div class="gantt-legend" aria-label="Gantt chart legend">
+            <span class="legend-run">Run</span>
+            <span class="legend-context">Context switch</span>
+            <span class="legend-idle">Idle</span>
+          </div>
+        </div>
+        <div id="replay-gantt" class="replay-gantt"></div>
+      </section>
+      <section class="panel results-panel" aria-labelledby="results-heading">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 / RESULTS</p><h2 id="results-heading">Process timings</h2></div>
+          <span id="result-algorithm" class="badge"></span>
+        </div>
+        <div id="averages" class="metrics"></div>
+        <div class="table-scroll">
+          <table id="results-table">
+            <thead><tr><th scope="col">Process ID</th><th scope="col">Arrival</th><th scope="col">Finish</th><th scope="col">Turnaround</th><th scope="col">Waiting</th><th scope="col">Response</th></tr></thead>
+            <tbody id="result-rows"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="events-heading">
+        <div class="section-heading">
+          <div><p class="eyebrow">04 / EVENT LOG</p><h2 id="events-heading">What happened, in order</h2></div>
+          <span id="event-count" class="muted"></span>
+        </div>
+        <p id="event-note" class="hint"></p>
+        <ol id="events" class="event-list"></ol>
+      </section>
+    </div>
+    <footer class="page-footer">Cloud Cluster · All timings are in simulation units.</footer>
+  </main>
+</body>
+</html>
