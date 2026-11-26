@@ -2,4 +2,4 @@
 - Task 8 checks passed. From the root, run `tests\run_golden.bat` (4 byte-identical fixtures) and `tests\api_check.bat` (6 golden comparisons and 54 invalid inputs).
 - Scheduling logic is untouched against the golden capture. Only event recording was added to ACS and Scheduler. SJF, Process and Timeline are byte-identical to the saved sources.
 - Task 8 verification gaps are the missing Git `baseline` ref and a separate Java-free Windows guest. All 7 classes compiled from the fallback source snapshot matched the golden capture byte for byte. See README.md for the source comparison and replay limits.
-- [ ] Task 9 publication in progress. Updated `.gitignore`, `README.md`, and `ui/vendor/README.md`. Both Windows x64 executables are in `ui/dist`; release verification is pending.
+- [x] Task 9 published source on `main` and [v1.0.0](https://github.com/Adamhamdy-Curiiie/Cloud-Cluster-Scheduler-UI/releases/tag/v1.0.0) with both Windows x64 executables. Updated `.gitignore`, `README.md`, and `ui/vendor/README.md`. Verify with `git log origin/main -1` and `gh release view v1.0.0`. Both asset sizes and SHA-256 hashes matched the Task 7 files.
