@@ -1,0 +1,531 @@
+1) Run the ready test cases
+2) Enter my own input (InputReader)
+Choice: 
+##################################################
+TEST 1: basic (cs=0, quantum=2)
+##################################################
+
+---------- ACS ----------
+T=0:
+  P1 arrived (arrival time 0) -> Tier 1
+  P1 runs for 2 units (until T=2)
+T=2:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 4, Priority: 5)]
+  P2 arrived (arrival time 1) -> Tier 1
+  P3 arrived (arrival time 2) -> Tier 1
+  P2 runs for 2 units (until T=4)
+T=4:
+  P2 moved from Tier 1 to Tier 2
+  Tier1 = [P3 (remaining: 4, Priority: 1)] | Tier2 = [P1 (remaining: 4, Priority: 5), P2 (remaining: 1, Priority: 3)]
+  P3 runs for 2 units (until T=6)
+T=6:
+  P3 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 4, Priority: 5), P2 (remaining: 1, Priority: 3), P3 (remaining: 2, Priority: 1)]
+  P1 aged: priority 5 -> 4
+  P3 selected from Tier 2 (priority 1)
+  P3 runs for 2 units (until T=8)
+T=8:
+  P3 finished
+  P2 aged: priority 3 -> 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 4, Priority: 4), P2 (remaining: 1, Priority: 2)]
+  P2 selected from Tier 2 (priority 2)
+  P2 runs for 1 units (until T=9)
+T=9:
+  P2 finished
+  Tier1 = [] | Tier2 = [P1 (remaining: 4, Priority: 4)]
+  P1 selected from Tier 2 (priority 4)
+  P1 runs for 4 units (until T=13)
+T=13:
+  P1 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 13 | 13 | 7 | 0
+P2 | 1 | 9 | 8 | 5 | 1
+P3 | 2 | 8 | 6 | 2 | 2
+
+Average Turnaround Time: 9.0
+Average Waiting Time: 4.67
+Average Response Time: 1.0
+CPU Utilization: 100.0%
+
+---------- SJF ----------
+T=0:
+  P1 arrived
+  P1 runs for 1 units (until T=1)
+T=1:
+  P2 arrived
+  P2 runs for 1 units (until T=2)
+T=2:
+  P3 arrived
+  P2 runs for 1 units (until T=3)
+T=3:
+  P2 runs for 1 units (until T=4)
+T=4:
+  P2 finished
+  P3 runs for 1 units (until T=5)
+T=5:
+  P3 runs for 1 units (until T=6)
+T=6:
+  P3 runs for 1 units (until T=7)
+T=7:
+  P3 runs for 1 units (until T=8)
+T=8:
+  P3 finished
+  P1 runs for 1 units (until T=9)
+T=9:
+  P1 runs for 1 units (until T=10)
+T=10:
+  P1 runs for 1 units (until T=11)
+T=11:
+  P1 runs for 1 units (until T=12)
+T=12:
+  P1 runs for 1 units (until T=13)
+T=13:
+  P1 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 13 | 13 | 7 | 0
+P2 | 1 | 4 | 3 | 0 | 0
+P3 | 2 | 8 | 6 | 2 | 2
+
+Average Turnaround Time: 7.33
+Average Waiting Time: 3.0
+Average Response Time: 0.67
+CPU Utilization: 100.0%
+
+##################################################
+TEST 2: idle gap + context switch (cs=1, quantum=2)
+##################################################
+
+---------- ACS ----------
+T=0:
+  P1 arrived (arrival time 0) -> Tier 1
+  P1 runs for 2 units (until T=2)
+T=2:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 1, Priority: 4)]
+  P2 arrived (arrival time 1) -> Tier 1
+  Context switch saves P1 and loads P2
+T=3:
+  P2 runs for 2 units (until T=5)
+T=5:
+  P2 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 1, Priority: 4), P2 (remaining: 3, Priority: 2)]
+  P2 selected from Tier 2 (priority 2)
+  P2 runs for 3 units (until T=8)
+T=8:
+  P2 finished
+  P1 aged: priority 4 -> 3
+  Tier1 = [] | Tier2 = [P1 (remaining: 1, Priority: 3)]
+  P1 selected from Tier 2 (priority 3)
+  Context switch saves P2 and loads P1
+T=9:
+  P1 runs for 1 units (until T=10)
+T=10:
+  P1 finished
+  Tier1 = [] | Tier2 = []
+  CPU is idle for 5 units
+T=15:
+  Tier1 = [] | Tier2 = []
+  P3 arrived (arrival time 15) -> Tier 1
+  P3 runs for 2 units (until T=17)
+T=17:
+  P3 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 10 | 10 | 7 | 0
+P2 | 1 | 8 | 7 | 2 | 2
+P3 | 15 | 17 | 2 | 0 | 0
+
+Average Turnaround Time: 6.33
+Average Waiting Time: 3.0
+Average Response Time: 0.67
+CPU Utilization: 58.82%
+
+---------- SJF ----------
+T=0:
+  P1 arrived
+  P1 runs for 1 units (until T=1)
+T=1:
+  P2 arrived
+  P1 runs for 1 units (until T=2)
+T=2:
+  P1 runs for 1 units (until T=3)
+T=3:
+  P1 finished
+  Context switch saves P1 and loads P2
+T=4:
+  P2 runs for 1 units (until T=5)
+T=5:
+  P2 runs for 1 units (until T=6)
+T=6:
+  P2 runs for 1 units (until T=7)
+T=7:
+  P2 runs for 1 units (until T=8)
+T=8:
+  P2 runs for 1 units (until T=9)
+T=9:
+  P2 finished
+T=15:
+  P3 arrived
+  P3 runs for 1 units (until T=16)
+T=16:
+  P3 runs for 1 units (until T=17)
+T=17:
+  P3 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 3 | 3 | 0 | 0
+P2 | 1 | 9 | 8 | 3 | 3
+P3 | 15 | 17 | 2 | 0 | 0
+
+Average Turnaround Time: 4.33
+Average Waiting Time: 1.0
+Average Response Time: 1.0
+CPU Utilization: 58.82%
+
+##################################################
+TEST 3: aging (cs=0, quantum=2)
+##################################################
+
+---------- ACS ----------
+T=0:
+  P1 arrived (arrival time 0) -> Tier 1
+  P2 arrived (arrival time 0) -> Tier 1
+  P3 arrived (arrival time 0) -> Tier 1
+  P1 runs for 2 units (until T=2)
+T=2:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [P2 (remaining: 10, Priority: 6), P3 (remaining: 3, Priority: 7)] | Tier2 = [P1 (remaining: 8, Priority: 8)]
+  P2 runs for 2 units (until T=4)
+T=4:
+  P2 moved from Tier 1 to Tier 2
+  Tier1 = [P3 (remaining: 3, Priority: 7)] | Tier2 = [P1 (remaining: 8, Priority: 8), P2 (remaining: 8, Priority: 6)]
+  P3 runs for 2 units (until T=6)
+T=6:
+  P3 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 8, Priority: 8), P2 (remaining: 8, Priority: 6), P3 (remaining: 1, Priority: 7)]
+  P1 aged: priority 8 -> 7
+  P2 selected from Tier 2 (priority 6)
+  P2 runs for 8 units (until T=14)
+T=14:
+  P2 finished
+  P1 aged: priority 7 -> 5
+  P3 aged: priority 7 -> 5
+  Tier1 = [] | Tier2 = [P1 (remaining: 8, Priority: 5), P3 (remaining: 1, Priority: 5)]
+  P1 selected from Tier 2 (priority 5)
+  P1 runs for 8 units (until T=22)
+T=22:
+  P1 finished
+  P3 aged: priority 5 -> 3
+  Tier1 = [] | Tier2 = [P3 (remaining: 1, Priority: 3)]
+  P3 selected from Tier 2 (priority 3)
+  P3 runs for 1 units (until T=23)
+T=23:
+  P3 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 22 | 22 | 12 | 0
+P2 | 0 | 14 | 14 | 4 | 2
+P3 | 0 | 23 | 23 | 20 | 4
+
+Average Turnaround Time: 19.67
+Average Waiting Time: 12.0
+Average Response Time: 2.0
+CPU Utilization: 100.0%
+
+---------- SJF ----------
+T=0:
+  P1 arrived
+  P2 arrived
+  P3 arrived
+  P3 runs for 1 units (until T=1)
+T=1:
+  P3 runs for 1 units (until T=2)
+T=2:
+  P3 runs for 1 units (until T=3)
+T=3:
+  P3 finished
+  P1 runs for 1 units (until T=4)
+T=4:
+  P1 runs for 1 units (until T=5)
+T=5:
+  P1 runs for 1 units (until T=6)
+T=6:
+  P1 runs for 1 units (until T=7)
+T=7:
+  P1 runs for 1 units (until T=8)
+T=8:
+  P1 runs for 1 units (until T=9)
+T=9:
+  P1 runs for 1 units (until T=10)
+T=10:
+  P1 runs for 1 units (until T=11)
+T=11:
+  P1 runs for 1 units (until T=12)
+T=12:
+  P1 runs for 1 units (until T=13)
+T=13:
+  P1 finished
+  P2 runs for 1 units (until T=14)
+T=14:
+  P2 runs for 1 units (until T=15)
+T=15:
+  P2 runs for 1 units (until T=16)
+T=16:
+  P2 runs for 1 units (until T=17)
+T=17:
+  P2 runs for 1 units (until T=18)
+T=18:
+  P2 runs for 1 units (until T=19)
+T=19:
+  P2 runs for 1 units (until T=20)
+T=20:
+  P2 runs for 1 units (until T=21)
+T=21:
+  P2 runs for 1 units (until T=22)
+T=22:
+  P2 runs for 1 units (until T=23)
+T=23:
+  P2 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 13 | 13 | 3 | 3
+P2 | 0 | 23 | 23 | 13 | 13
+P3 | 0 | 3 | 3 | 0 | 0
+
+Average Turnaround Time: 13.0
+Average Waiting Time: 5.33
+Average Response Time: 5.33
+CPU Utilization: 100.0%
+
+##################################################
+TEST 4: first arrival at 5 (cs=0, quantum=3)
+##################################################
+
+---------- ACS ----------
+T=0:
+  CPU is idle for 5 units
+T=5:
+  Tier1 = [] | Tier2 = []
+  P1 arrived (arrival time 5) -> Tier 1
+  P1 runs for 3 units (until T=8)
+T=8:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 1, Priority: 2)]
+  P2 arrived (arrival time 6) -> Tier 1
+  P2 runs for 2 units (until T=10)
+T=10:
+  P2 finished
+  Tier1 = [] | Tier2 = [P1 (remaining: 1, Priority: 2)]
+  P1 selected from Tier 2 (priority 2)
+  P1 runs for 1 units (until T=11)
+T=11:
+  P1 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 5 | 11 | 6 | 2 | 0
+P2 | 6 | 10 | 4 | 2 | 2
+
+Average Turnaround Time: 5.0
+Average Waiting Time: 2.0
+Average Response Time: 1.0
+CPU Utilization: 54.55%
+
+---------- SJF ----------
+T=5:
+  P1 arrived
+  P1 runs for 1 units (until T=6)
+T=6:
+  P2 arrived
+  P2 runs for 1 units (until T=7)
+T=7:
+  P2 runs for 1 units (until T=8)
+T=8:
+  P2 finished
+  P1 runs for 1 units (until T=9)
+T=9:
+  P1 runs for 1 units (until T=10)
+T=10:
+  P1 runs for 1 units (until T=11)
+T=11:
+  P1 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 5 | 11 | 6 | 2 | 0
+P2 | 6 | 8 | 2 | 0 | 0
+
+Average Turnaround Time: 4.0
+Average Waiting Time: 1.0
+Average Response Time: 0.0
+CPU Utilization: 54.55%
+
+##################################################
+TEST 5: single process (cs=2, quantum=3)
+##################################################
+
+---------- ACS ----------
+T=0:
+  P1 arrived (arrival time 0) -> Tier 1
+  P1 runs for 3 units (until T=3)
+T=3:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 4, Priority: 3)]
+  P1 selected from Tier 2 (priority 3)
+  P1 runs for 4 units (until T=7)
+T=7:
+  P1 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 7 | 7 | 0 | 0
+
+Average Turnaround Time: 7.0
+Average Waiting Time: 0.0
+Average Response Time: 0.0
+CPU Utilization: 100.0%
+
+---------- SJF ----------
+T=0:
+  P1 arrived
+  P1 runs for 1 units (until T=1)
+T=1:
+  P1 runs for 1 units (until T=2)
+T=2:
+  P1 runs for 1 units (until T=3)
+T=3:
+  P1 runs for 1 units (until T=4)
+T=4:
+  P1 runs for 1 units (until T=5)
+T=5:
+  P1 runs for 1 units (until T=6)
+T=6:
+  P1 runs for 1 units (until T=7)
+T=7:
+  P1 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 7 | 7 | 0 | 0
+
+Average Turnaround Time: 7.0
+Average Waiting Time: 0.0
+Average Response Time: 0.0
+CPU Utilization: 100.0%
+
+##################################################
+TEST 6: ties + late arrival (cs=1, quantum=2)
+##################################################
+
+---------- ACS ----------
+T=0:
+  P1 arrived (arrival time 0) -> Tier 1
+  P2 arrived (arrival time 0) -> Tier 1
+  P3 arrived (arrival time 0) -> Tier 1
+  P1 runs for 2 units (until T=2)
+T=2:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [P2 (remaining: 4, Priority: 2), P3 (remaining: 2, Priority: 5)] | Tier2 = [P1 (remaining: 2, Priority: 2)]
+  Context switch saves P1 and loads P2
+T=3:
+  P2 runs for 2 units (until T=5)
+T=5:
+  P2 moved from Tier 1 to Tier 2
+  Tier1 = [P3 (remaining: 2, Priority: 5)] | Tier2 = [P1 (remaining: 2, Priority: 2), P2 (remaining: 2, Priority: 2)]
+  P4 arrived (arrival time 3) -> Tier 1
+  Context switch saves P2 and loads P3
+T=6:
+  P3 runs for 2 units (until T=8)
+T=8:
+  P3 finished
+  Tier1 = [P4 (remaining: 1, Priority: 1)] | Tier2 = [P1 (remaining: 2, Priority: 2), P2 (remaining: 2, Priority: 2)]
+  Context switch saves P3 and loads P4
+T=9:
+  P4 runs for 1 units (until T=10)
+T=10:
+  P4 finished
+  Tier1 = [] | Tier2 = [P1 (remaining: 2, Priority: 2), P2 (remaining: 2, Priority: 2)]
+  P1 aged: priority 2 -> 0
+  P2 aged: priority 2 -> 1
+  P1 selected from Tier 2 (priority 0)
+  Context switch saves P4 and loads P1
+T=11:
+  P1 runs for 2 units (until T=13)
+T=13:
+  P1 finished
+  P2 aged: priority 1 -> 0
+  Tier1 = [] | Tier2 = [P2 (remaining: 2, Priority: 0)]
+  P2 selected from Tier 2 (priority 0)
+  Context switch saves P1 and loads P2
+T=14:
+  P2 runs for 2 units (until T=16)
+T=16:
+  P2 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 13 | 13 | 9 | 0
+P2 | 0 | 16 | 16 | 12 | 3
+P3 | 0 | 8 | 8 | 6 | 6
+P4 | 3 | 10 | 7 | 6 | 6
+
+Average Turnaround Time: 11.0
+Average Waiting Time: 8.25
+Average Response Time: 3.75
+CPU Utilization: 68.75%
+
+---------- SJF ----------
+T=0:
+  P1 arrived
+  P2 arrived
+  P3 arrived
+  P3 runs for 1 units (until T=1)
+T=1:
+  P3 runs for 1 units (until T=2)
+T=2:
+  P3 finished
+  Context switch saves P3 and loads P1
+T=3:
+  P1 runs for 1 units (until T=4)
+T=4:
+  P4 arrived
+  Context switch saves P1 and loads P4
+T=5:
+  P4 runs for 1 units (until T=6)
+T=6:
+  P4 finished
+  Context switch saves P4 and loads P1
+T=7:
+  P1 runs for 1 units (until T=8)
+T=8:
+  P1 runs for 1 units (until T=9)
+T=9:
+  P1 runs for 1 units (until T=10)
+T=10:
+  P1 finished
+  Context switch saves P1 and loads P2
+T=11:
+  P2 runs for 1 units (until T=12)
+T=12:
+  P2 runs for 1 units (until T=13)
+T=13:
+  P2 runs for 1 units (until T=14)
+T=14:
+  P2 runs for 1 units (until T=15)
+T=15:
+  P2 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 10 | 10 | 6 | 3
+P2 | 0 | 15 | 15 | 11 | 11
+P3 | 0 | 2 | 2 | 0 | 0
+P4 | 3 | 6 | 3 | 2 | 2
+
+Average Turnaround Time: 7.5
+Average Waiting Time: 4.75
+Average Response Time: 4.0
+CPU Utilization: 73.33%

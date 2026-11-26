@@ -1,0 +1,5 @@
+- [x] Tasks 0–7 complete, including offline 2D/3D replay and Windows x64 portable and installer builds with a bundled JVM.
+- Task 8 checks passed. From the root, run `tests\run_golden.bat` (4 byte-identical fixtures) and `tests\api_check.bat` (6 golden comparisons and 54 invalid inputs).
+- Scheduling logic is untouched against the golden capture. Only event recording was added to ACS and Scheduler. SJF, Process and Timeline are byte-identical to the saved sources.
+- Task 8 verification gaps are the missing Git `baseline` ref and a separate Java-free Windows guest. All 7 classes compiled from the fallback source snapshot matched the golden capture byte for byte. See README.md for the source comparison and replay limits.
+- [ ] Task 9 publication in progress. Updated `.gitignore`, `README.md`, and `ui/vendor/README.md`. Both Windows x64 executables are in `ui/dist`; release verification is pending.

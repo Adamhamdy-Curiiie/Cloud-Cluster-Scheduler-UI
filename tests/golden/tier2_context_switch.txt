@@ -1,0 +1,166 @@
+1) Run the ready test cases
+2) Enter my own input (InputReader)
+Choice: Number of processes: 
+Process P1:
+  Arrival time:   Burst time:   Priority: 
+Process P2:
+  Arrival time:   Burst time:   Priority: 
+Process P3:
+  Arrival time:   Burst time:   Priority: 
+Process P4:
+  Arrival time:   Burst time:   Priority: 
+Input loaded successfully!
+Number of processes: 4
+Context switch time: Quantum (used by ACS only): Algorithm (1 = SJF, 2 = ACS, 3 = both): 
+---------- SJF ----------
+T=0:
+  P1 arrived
+  P2 arrived
+  P3 arrived
+  P4 arrived
+  P4 runs for 1 units (until T=1)
+T=1:
+  P4 runs for 1 units (until T=2)
+T=2:
+  P4 runs for 1 units (until T=3)
+T=3:
+  P4 runs for 1 units (until T=4)
+T=4:
+  P4 runs for 1 units (until T=5)
+T=5:
+  P4 finished
+  Context switch saves P4 and loads P2
+T=6:
+  P2 runs for 1 units (until T=7)
+T=7:
+  P2 runs for 1 units (until T=8)
+T=8:
+  P2 runs for 1 units (until T=9)
+T=9:
+  P2 runs for 1 units (until T=10)
+T=10:
+  P2 runs for 1 units (until T=11)
+T=11:
+  P2 runs for 1 units (until T=12)
+T=12:
+  P2 finished
+  Context switch saves P2 and loads P1
+T=13:
+  P1 runs for 1 units (until T=14)
+T=14:
+  P1 runs for 1 units (until T=15)
+T=15:
+  P1 runs for 1 units (until T=16)
+T=16:
+  P1 runs for 1 units (until T=17)
+T=17:
+  P1 runs for 1 units (until T=18)
+T=18:
+  P1 runs for 1 units (until T=19)
+T=19:
+  P1 runs for 1 units (until T=20)
+T=20:
+  P1 finished
+  Context switch saves P1 and loads P3
+T=21:
+  P3 runs for 1 units (until T=22)
+T=22:
+  P3 runs for 1 units (until T=23)
+T=23:
+  P3 runs for 1 units (until T=24)
+T=24:
+  P3 runs for 1 units (until T=25)
+T=25:
+  P3 runs for 1 units (until T=26)
+T=26:
+  P3 runs for 1 units (until T=27)
+T=27:
+  P3 runs for 1 units (until T=28)
+T=28:
+  P3 runs for 1 units (until T=29)
+T=29:
+  P3 finished
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 20 | 20 | 13 | 13
+P2 | 0 | 12 | 12 | 6 | 6
+P3 | 0 | 29 | 29 | 21 | 21
+P4 | 0 | 5 | 5 | 0 | 0
+
+Average Turnaround Time: 16.5
+Average Waiting Time: 10.0
+Average Response Time: 10.0
+CPU Utilization: 89.66%
+
+---------- ACS ----------
+T=0:
+  P1 arrived (arrival time 0) -> Tier 1
+  P2 arrived (arrival time 0) -> Tier 1
+  P3 arrived (arrival time 0) -> Tier 1
+  P4 arrived (arrival time 0) -> Tier 1
+  P1 runs for 2 units (until T=2)
+T=2:
+  P1 moved from Tier 1 to Tier 2
+  Tier1 = [P2 (remaining: 6, Priority: 3), P3 (remaining: 8, Priority: 2), P4 (remaining: 5, Priority: 1)] | Tier2 = [P1 (remaining: 5, Priority: 4)]
+  Context switch saves P1 and loads P2
+T=3:
+  P2 runs for 2 units (until T=5)
+T=5:
+  P2 moved from Tier 1 to Tier 2
+  Tier1 = [P3 (remaining: 8, Priority: 2), P4 (remaining: 5, Priority: 1)] | Tier2 = [P1 (remaining: 5, Priority: 4), P2 (remaining: 4, Priority: 3)]
+  Context switch saves P2 and loads P3
+T=6:
+  P3 runs for 2 units (until T=8)
+T=8:
+  P3 moved from Tier 1 to Tier 2
+  Tier1 = [P4 (remaining: 5, Priority: 1)] | Tier2 = [P1 (remaining: 5, Priority: 4), P2 (remaining: 4, Priority: 3), P3 (remaining: 6, Priority: 2)]
+  Context switch saves P3 and loads P4
+T=9:
+  P4 runs for 2 units (until T=11)
+T=11:
+  P4 moved from Tier 1 to Tier 2
+  Tier1 = [] | Tier2 = [P1 (remaining: 5, Priority: 4), P2 (remaining: 4, Priority: 3), P3 (remaining: 6, Priority: 2), P4 (remaining: 3, Priority: 1)]
+  P1 aged: priority 4 -> 2
+  P2 aged: priority 3 -> 2
+  P4 selected from Tier 2 (priority 1)
+  P4 runs for 3 units (until T=14)
+T=14:
+  P4 finished
+  P1 aged: priority 2 -> 1
+  P2 aged: priority 2 -> 1
+  P3 aged: priority 2 -> 1
+  Tier1 = [] | Tier2 = [P1 (remaining: 5, Priority: 1), P2 (remaining: 4, Priority: 1), P3 (remaining: 6, Priority: 1)]
+  P1 selected from Tier 2 (priority 1)
+  Context switch saves P4 and loads P1
+T=15:
+  P1 runs for 5 units (until T=20)
+T=20:
+  P1 finished
+  P2 aged: priority 1 -> 0
+  P3 aged: priority 1 -> 0
+  Tier1 = [] | Tier2 = [P2 (remaining: 4, Priority: 0), P3 (remaining: 6, Priority: 0)]
+  P2 selected from Tier 2 (priority 0)
+  Context switch saves P1 and loads P2
+T=21:
+  P2 runs for 4 units (until T=25)
+T=25:
+  P2 finished
+  Tier1 = [] | Tier2 = [P3 (remaining: 6, Priority: 0)]
+  P3 selected from Tier 2 (priority 0)
+  Context switch saves P2 and loads P3
+T=26:
+  P3 runs for 6 units (until T=32)
+T=32:
+  P3 finished
+  Tier1 = [] | Tier2 = []
+
+Process | Arrival | Finish | Turnaround | Waiting | Response
+P1 | 0 | 20 | 20 | 13 | 0
+P2 | 0 | 25 | 25 | 19 | 3
+P3 | 0 | 32 | 32 | 24 | 6
+P4 | 0 | 14 | 14 | 9 | 9
+
+Average Turnaround Time: 22.75
+Average Waiting Time: 16.25
+Average Response Time: 4.5
+CPU Utilization: 81.25%

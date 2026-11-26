@@ -1,0 +1,3 @@
+golden/*.txt -text
+run_golden.sh text eol=lf
+run_golden.bat text eol=crlf
